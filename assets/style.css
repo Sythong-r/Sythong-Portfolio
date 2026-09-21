@@ -365,7 +365,7 @@
     body {width: 60%;}
   }
 
-  @media (max-width: 68rem) {
+  @media (max-width: 1088px) {
     body {
       flex-direction: column;
       gap: 0;
