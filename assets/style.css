@@ -391,6 +391,7 @@
     .hero img {
       order: -1;
       max-width: 16rem;
+      align-self: center;
     }
   }
   
@@ -402,21 +403,7 @@
     .topbar {
       border-radius: var(--radius);
     }
-  
-    .details {
-      grid-template-columns: 1fr;
-      gap: 0;
-    }
-  
-    .details dt {
-      padding-bottom: 0;
-    }
-  
-    .contact-form,
-    .post {
-      grid-template-columns: 1fr;
-    }
-  
+
     .post img {
       grid-row: auto;
       max-height: 12rem;
