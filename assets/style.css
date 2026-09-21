@@ -391,7 +391,7 @@
     .hero img {
       order: -1;
       max-width: 16rem;
-      align-self: center;
+      justify-self: center;
     }
   }
   
