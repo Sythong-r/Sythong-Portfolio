@@ -374,6 +374,7 @@
 
     .rail {
       position: static;
+      align-self: stretch; /*horixontal stretch in stacked view*/
       width: auto;
       height: auto;
       margin: var(--gap) var(--gap) 0;
