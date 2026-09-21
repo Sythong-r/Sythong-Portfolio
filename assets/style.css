@@ -105,7 +105,7 @@
     position: sticky;
     top: 0;
     z-index: 10;
-    padding: 2rem 1rem 1rem;
+    padding: 1rem;
     background: var(--surface);
     box-shadow: var(--shadow);
   }
