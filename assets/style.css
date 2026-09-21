@@ -362,7 +362,7 @@
   /* 7. Responsive ------------------------------------------------ */
   /*big screen/monitor*/
   @media (min-width: 1600px){
-    body {width: 55%;}
+    body {width: 60%;}
   }
 
   @media (max-width: 1088px) {
