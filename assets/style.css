@@ -1,413 +1,366 @@
 /* =============================================================
    Sythong Run — portfolio
-   1. Variables   2. Left-panel   3. Nav    4. Layout   
-   5. Components  6. Sections     7. Responsive
+   1. Variables  2. Base    3. Layout     4. Nav
+   5. Components 6. Content 7. Responsive
    ============================================================= */
 
-/* 1. Variables ---------------------------------------------------- */
+/* 1. Variables =============== */
 :root {
-    --ink: #14161a;
-    --ink-medium: #2f3135; 
-    --ink-soft: #5b6169;
-    --light-gray: #d3d5d7;
-    --line: #e2e6ea;
-    --paper: #e1ecf3;
-    --surface: #ffffff;
-    --accent: #12a294;
-    --button: #137261;
-  
-    --font-display: 'Bricolage Grotesque', 'Public Sans', system-ui, sans-serif;
-    --font-body: 'Public Sans', system-ui, -apple-system, sans-serif;
-  
-    --rail-w: 20rem;
-    --gap: 1.75rem;
-    --radius: 14px;
-    --shadow: 0 1px 2px rgb(20 22 26 / .05), 0 12px 32px -18px rgb(20 22 26 / .25);
-  }
-  
-  /* 2. Left-panel ------------------------------------------------------ */
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
-  
-  body {
-    display: flex;
-    gap: var(--gap);
+  --ink: #14161a;
+  --ink-medium: #2f3135;
+  --ink-soft: #5b6169;
+  --light-gray: #d3d5d7;
+  --line: #e2e6ea;
+  --site-bgn: #e1ecf3;
+  --surface: #ffffff;
+  --accent: #12a294;
+  --button: #137261;
 
-    /*70% on laptop/desktop*/
-    width: 70%;
-    margin-inline: auto;
+  --font-display: 'Bricolage Grotesque', 'Public Sans', system-ui, sans-serif;
+  --font-body: 'Public Sans', system-ui, -apple-system, sans-serif;
 
-    background: var(--paper);
-    color: var(--ink);
-    font: 400 1rem/1.65 var(--font-body);
-    -webkit-font-smoothing: antialiased;
-  }
-  
-  h1,
-  h2,
-  h3 {
-    font-family: var(--font-display);
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -.015em;
-    margin: 0;
-  }
-  
-  p {
-    margin: 0 0 1rem;
-    max-width: 68ch;
-  }
-  
-  img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    background: var(--line);
-    /* keeps the layout intact while images are missing */
-  }
-  
-  a {
-    color: inherit;
-    text-underline-offset: .18em;
+  --grid-gap: 20px;
+  --radius: 14px;
+
+  /* Page never stretches past this, which is what the old*/
+  --page-max: 1400px;
+
+  /*card padding
+    --card-pad narrow boxes, head, footer
+    --card-pad-lg for .content
+  */
+  --card-pad: clamp(1rem, 1.2vw + .7rem, 1.75rem);
+  --nav-pad-x: clamp(10rem, 12rem, 15rem); /*.75rem, 1.5vw, 1.5rem*/
+  --card-pad-lg: clamp(1.25rem, 3.2vw, 3rem);
+
+  /*hard cap on line length*/
+  --measure: 68ch;
+
+  /* Menu bar's size. The nav is held to this height, the sidebar parks below */
+  --nav-h: 4.25rem;
+  --stick-top: calc(var(--nav-h) + var(--grid-gap));
+
+  --shadow:
+    0 1px 2px rgb(20 22 26 / .06),
+    0 8px 16px -6px rgb(20 22 26 / .10),
+    0 24px 44px -16px rgb(20 22 26 / .18);
+}
+
+/* 2. Base =============== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--site-bgn);
+  color: var(--ink);
+  font-family: var(--font-body);
+  overflow-wrap: break-word;
+}
+
+/* prevent odd scaling of image */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+}
+
+/* Jumping different sections shouldn't hide the heading under the nav */
+:target {
+  scroll-margin-top: var(--stick-top);
+}
+
+/* 3. Layout =============== */
+.container {
+  display: grid;
+  grid-template-columns: repeat(12, [col-start] 1fr);
+  gap: var(--grid-gap);
+  padding: var(--grid-gap);
+  max-width: var(--page-max);
+  margin-inline: auto;
+}
+
+/* Mobile first: every child full width, stacked. */
+.container > * {
+  grid-column: col-start / span 12;
+}
+
+/* Floating cards. Sections inside, .content get the same.
+   Padding is fluid so narrow rail doesn't swallow its own content. */
+.container > *,
+.content > section {
+  min-width: 0;
+  padding: var(--card-pad);
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/*bigger padding for reading card
+higher specificity than blanket rule*/
+.content > section {
+    padding: var(--card-pad-lg);
+}
+
+/*cap text length*/
+.content p,
+.content li {
+    max-width: var(--measure);
+    font-size: clamp(1rem, .3vw + .95rem, 1.15rem);
+    line-height: 1.7;
+    margin: 0 0 1.25em;
+}
+
+/* .content = stack that holds cards */
+.container > .content {
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  display: grid;
+  gap: var(--grid-gap);
+  align-content: start;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+/* 4. Nav =============== */
+/* .container > .nav so the padding beats the blanket card rule.
+   min-height makes --nav-h true,
+   so the sidebar's offset is always correct */
+.container > .nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  min-height: var(--nav-h);
+  padding: .5rem var(--nav-pad-x);
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .35rem;
+}
+
+nav a {
+  display: block;
+  padding: .7rem 1.25rem;
+  border-radius: 999px;
+  font-size: 1.3rem;
+  line-height: 1.25;
+  font-weight: bold;
+  text-decoration: none;
+  color: var(--ink-medium);
+}
+
+nav a:hover,
+nav a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: .3em;
+  text-decoration-thickness: 2px;
+}
+/* Current section: :target marks the section the url points at */
+html:not(:has(:target)) .nav [href="#home"],
+html:has(#home:target) .nav [href="#home"],
+html:has(#about:target) .nav [href="#about"],
+html:has(#philosophy:target) .nav [href="#philosophy"],
+html:has(#experience:target) .nav [href="#experience"],
+html:has(#other:target) .nav [href="#other"] {
+  background: none;
+  color: var(--ink);
+}
+
+/* 5. Components =============== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .7rem 1.25rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink-soft);
+  color: #fff;
+  font-weight: 600;
+  font-size: .95rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--button);
+}
+
+.sec-head {
+  margin-bottom: 2rem;
+}
+
+.sec-head h2 {
+  font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+  margin-bottom: .5rem;
+}
+
+.sec-head p {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+/* 6. Content =============== */
+/* Profile rail */
+.avatar {
+  display: block;
+  /* aspect-ratio keeps img round at whatever width it lands on (no stretching oval) */
+  width: min(9.5rem, 100%);
+  aspect-ratio: 1;
+  height: auto;
+  margin: 0 auto 1.25rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.sidebar h1 {
+  margin-top: 0;
+  font-size: 1.5rem;
+}
+
+.role {
+  margin: .35rem 0 1.5rem;
+  color: var(--ink-soft);
+}
+
+/* Hero */
+.hero {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+  padding-block: 3rem;
+}
+
+.hero h2 {
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  margin-bottom: 1.75rem;
+  text-wrap: balance;
+}
+
+.hero img {
+  border-radius: var(--radius);
+}
+
+/* Teaching experiences */
+.timeline {
+  padding-left: 1.75rem;
+  border-left: 1px solid var(--line);
+}
+
+.timeline li {
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+.timeline li:last-child {
+  padding-bottom: 0;
+}
+
+/* bullet point on the line */
+.timeline li::before {
+  content: "";
+  position: absolute;
+  left: calc(-1.75rem - 5px);
+  top: .45rem;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.timeline h3 {
+  font-size: 1.1rem;
+}
+
+.when {
+  margin: .25rem 0 .6rem;
+  color: var(--ink-medium);
+  font-size: .88rem;
+}
+
+.timeline p:last-child {
+  margin: 0;
+  color: var(--ink-medium);
+}
+
+/* 7. Responsive =============== */
+@media (min-width: 750px) {
+  .head {
+    grid-row: 1;
   }
 
-
-  a:hover {
-    color: var(--accent);
-  }
-  
-  ul,
-  ol {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  
-  button,
-  input,
-  textarea {
-    font: inherit;
-    color: inherit;
-  }
-  
-  :focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-    border-radius: 4px;
+  .nav {
+    grid-row: 2;
   }
 
-  /* 3. Nav ------------------------------------------------*/
-  /* Nav — across the top, stick while scroll */
-  .topbar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    padding: 1rem;
-    background: var(--surface);
-    box-shadow: var(--shadow);
-  }
-  
-  .topbar ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .25rem;
-  }
-  
-  .topbar a {
-    display: block;
-    padding: .45rem .8rem;
-    border-radius: 999px;
-    font-size: .92rem;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  
-  .topbar a:hover {
-    background: var(--paper);
-  }
-  
-  /* so an anchor jump doesn't park the heading under the sticky bar */
-  .main section {
-    scroll-margin-top: 6rem;
-  }
-  
-  /* --- Current section, A: follows the link you clicked -----------
-     :target marks the section the
-     URL points at; :has() reaches back up to style its nav link. */
-  @supports not (timeline-scope: --s) {
-  
-    html:not(#home:target) .topbar [href="#home"],
-    html:has(#about:target) .topbar [href="#about"],
-    html:has(#philosophy:target) .topbar [href="#philosophy"],
-    html:has(#experience:target) .topbar [href="#experience"],
-    html:has(#other:target) .topbar [href="#other"] {
-      background: var(--ink);
-      color: var(--surface);
-    }
+  /* Sidebar and content share row 3
+    a sticky grid item can only travel inside its own grid area,
+    so the sidebar needs the tall row the content creates. */
+  .sidebar {
+    grid-column: col-start / span 3;
+    grid-row: 3;
   }
 
-  /* 4. Layout ---------------------------------------------------- */
-  .rail {
-    position: sticky;
-    top: var(--gap); 
-    align-self: start; /*prevent stretching*/
-    flex: none;
-    width: var(--rail-w);
-    margin-block:var(--gap);
+  .content {
+    grid-column: col-start 4 / span 9;
+    grid-row: 3;
+  }
 
-    height: calc(100dvh - var(--gap) * 2);
-    overflow-y: auto;
-
-    padding: 2.25rem 1.75rem;
-    background: var(--surface);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
+  .footer {
+    grid-column: col-start 4 / span 9;
+    grid-row: 4;
     text-align: center;
   }
-  
-  .main {
-    flex: 1;
-    min-width: 0;
-    padding: var(--gap);
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap);
-  }
-  
-  .card {
-    padding: 2.5rem;
-    background: var(--surface);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
+
+  .container > .sidebar {
+    position: sticky;
+    top: var(--stick-top);
+    /* without this the card stretches to fill the row*/
+    align-self: start;
+    /* below the nav's z-index: 20 */
+    z-index: 10;
+    /* fill the frame, the viewport. dvh works best for mobile view */
+    height: calc(100vh - var(--stick-top) - var(--grid-gap));
+    height: calc(100dvh - var(--stick-top) - var(--grid-gap));
+    /* short screens: the rail scrolls itself instead of losing its bottom */
+    overflow-y: auto;
   }
 
-  
-  /* 5. Components ------------------------------------------------ */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    padding: .7rem 1.25rem;
-    border: 0;
-    border-radius: 999px;
-    background: var(--ink-soft);
-    color: #fff;
-    font-weight: 600;
-    font-size: .95rem;
-    text-decoration: none;
-    cursor: pointer;
+  nav ul {
+   justify-content: justify;
+   /* justify-content: center;
+    gap: clamp(.35rem, 2vw, 3rem);*/
   }
-  
-  .btn:hover {
-    color: #fff;
-    background: var(--button);
-  }
-  
-  .sec-head {
-    margin-bottom: 2rem;
-  }
-  
-  .sec-head h2 {
-    font-size: clamp(1.6rem, 2.6vw, 2.1rem);
-    margin-bottom: .5rem;
-  }
-  
-  .sec-head p {
-    margin: 0;
-    color: var(--ink-soft);
-  }
-  
-  .sub {
-    font-size: 1.05rem;
-    margin: 2.5rem 0 1.25rem;
-  }
-  
-  /* 6. Sections -------------------------------------------------- */
-  
-  /* Profile rail */
-  .avatar {
-    width: 9.5rem;
-    height: 9.5rem;
-    margin: 0 auto 1.25rem;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-  
-  .rail h1 {
-    font-size: 1.5rem;
-  }
-  
-  .role {
-    margin: .35rem 0 1.5rem;
-    color: var(--ink-soft);
-  }
-  
-  .rail-title {
-    font-size: 1rem;
-    margin-bottom: .6rem;
-  }
-  
-  .rail-note {
-    margin-bottom: 1.75rem;
-    color: var(--ink-soft);
-    font-size: .92rem;
-  }
-  
-  .social {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: .4rem;
-    margin-bottom: 2rem;
-  }
-  
-  .social a {
-    display: block;
-    padding: .3rem .7rem;
-    border-radius: 999px;
-    background: var(--light-gray);
-    font-size: .8rem;
-    text-decoration: none;
-  }
-  
-  .social a:hover {
-    background: var(--button);
-    color: #fff;
-  }
-  
-  /* Hero */
+
   .hero {
-    display: grid;
-    grid-template-columns: 1.15fr .85fr;
-    align-items: center;
-    gap: 2rem;
-    padding-block: 3rem;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
   }
-  
-  .hero h2 {
-    font-size: clamp(1.9rem, 4vw, 2rem);
-    margin-bottom: 1.75rem;
-    text-wrap: balance;
-  }
-  
-  .hero img {
-    border-radius: var(--radius);
-  }
+}
 
-  
-  /* Teaching experiences */
-  .timeline {
-    padding-left: 1.75rem;
-    border-left: 1px solid var(--line);
+/* Wider screens get more space */
+@media (min-width: 1100px) {
+  :root {
+    --grid-gap: 28px;
   }
-  
-  .timeline li {
-    position: relative;
-    padding-bottom: 2rem;
-  }
-  
-  .timeline li:last-child {
-    padding-bottom: 0;
-  }
-  
-  /*timeline line + bullet point*/
-  .timeline li::before {
-    content: "";
-    position: absolute;
-    left: calc(-1.75rem - 5px);
-    top: .45rem;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--accent);
-  }
-  
-  .timeline h3 {
-    font-size: 1.1rem;
-  }
-  
-  .when {
-    margin: .25rem 0 .6rem;
-    color: var(--ink-medium);
-    font-size: .88rem;
-  }
-  
-  .timeline p:last-child {
-    margin: 0;
-    color: var(--ink-medium);
-  }
-  
-  
-  /* Footer */
-  .site-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1.25rem 1.75rem;
-    background: var(--surface);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    color: var(--ink-soft);
-    font-size: .9rem;
-  }
-  
-  .site-footer p {
-    margin: 0;
-  }
-  
-  /* 7. Responsive ------------------------------------------------ */
-  /*big screen/monitor*/
-  @media (min-width: 1600px){
-    body {width: 60%;}
-  }
-
-  @media (max-width: 1088px) {
-    body {
-      flex-direction: column;
-      gap: 0;
-      width: 100%;
-    }
-
-    .rail {
-      position: static;
-      align-self: stretch; /*horixontal stretch in stacked view*/
-      width: auto;
-      height: auto;
-      margin: var(--gap) var(--gap) 0;
-    }
-  
-    .main {
-      padding: var(--gap);
-    }
-  
-    .hero {
-      grid-template-columns: 1fr;
-    }
-  
-    .hero img {
-      order: -1;
-      max-width: 16rem;
-      justify-self: center;
-    }
-  }
-  
-  @media (max-width: 48rem) {
-    .card {
-      padding: 1.75rem;
-    }
-  
-    .topbar {
-      border-radius: var(--radius);
-    }
-
-    .post img {
-      grid-row: auto;
-      max-height: 12rem;
-    }
-  }
-
-  
+}
