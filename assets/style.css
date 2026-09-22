@@ -137,7 +137,8 @@ higher specificity than blanket rule*/
 /* 4. Nav =============== */
 /* .container > .nav so the padding beats the blanket card rule.
    min-height makes --nav-h true,
-   so the sidebar's offset is always correct */
+   so the sidebar's offset is always correct.
+   Adjust for small screen nav */
 .container > .nav {
   position: sticky;
   top: 0;
@@ -145,29 +146,33 @@ higher specificity than blanket rule*/
   display: flex;
   align-items: center;
   min-height: var(--nav-h);
-  padding: .5rem var(--nav-pad-x);
+  padding: .5rem .75rem;
 }
+
+/*smallest screen nav*/
 
 nav ul {
   margin: 0;
   padding: 0;
   list-style: none;
   flex: 1;
-  display: flex;
-  flex-wrap: wrap;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: .35rem;
 }
 
 nav a {
   display: block;
-  padding: .7rem 1.25rem;
+  padding: .6rem clamp(.5rem, 1.4vw, 1.25rem);
   border-radius: 999px;
-  font-size: 1.3rem;
+  font-size: clamp(.95rem, 1.6vw, 1.3rem);
   line-height: 1.25;
   font-weight: bold;
   text-decoration: none;
   color: var(--ink-medium);
+  text-align: center;
 }
 
 nav a:hover,
@@ -305,6 +310,25 @@ html:has(#other:target) .nav [href="#other"] {
 }
 
 /* 7. Responsive =============== */
+@media (min-width: 640px) {
+  nav ul {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;   /* bar hidden, still swipeable */
+  }
+
+  nav ul::-webkit-scrollbar {
+    display: none;
+  }
+
+  nav a {
+    white-space: nowrap;     /* keeps "Teaching Philosophy" on one line */
+  }
+}
+
 @media (min-width: 750px) {
   .head {
     grid-row: 1;
@@ -347,12 +371,6 @@ html:has(#other:target) .nav [href="#other"] {
     overflow-y: auto;
   }
 
-  nav ul {
-   justify-content: justify;
-   /* justify-content: center;
-    gap: clamp(.35rem, 2vw, 3rem);*/
-  }
-
   .hero {
     grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
   }
@@ -360,7 +378,7 @@ html:has(#other:target) .nav [href="#other"] {
 
 /* Wider screens get more space */
 @media (min-width: 1100px) {
-  :root {
-    --grid-gap: 28px;
+  .container > .nav {
+    padding: .5rem var(--nav-pad-x);
   }
 }
